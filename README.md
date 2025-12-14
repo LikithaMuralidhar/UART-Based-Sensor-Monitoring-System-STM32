@@ -1,136 +1,128 @@
-**UART-Based Sensor Monitoring System (STM32)**
-Overview
+# UART-Based Sensor Monitoring System (STM32)
 
-This project implements a UART-controlled sensor monitoring system on an STM32 microcontroller using the STM32 HAL library.
-The system simulates temperature and humidity sensors, allows user interaction through a serial terminal, and supports configurable output formats and sampling intervals.
+## Overview
 
-Users can control the system by sending commands over UART to start/stop monitoring, read sensor data on demand, change data formats, and configure sampling intervals.
+This project implements a UART-controlled sensor monitoring system on an STM32 microcontroller using the STM32 HAL library.  
+The system simulates temperature and humidity sensors and allows interaction through a serial terminal using text-based commands.
 
-**Features**
+Users can start or stop monitoring, read sensor data on demand, configure sampling intervals, and select output formats.
 
-UART-based command-line interface (CLI)
+---
 
-Simulated temperature and humidity sensors
+## Features
 
-Continuous or on-demand sensor data transmission
+- UART-based command-line interface
+- Simulated temperature and humidity sensors
+- Continuous and on-demand data transmission
+- Configurable sampling interval
+- Multiple output formats:
+  - Text
+  - CSV
+  - JSON
+- Interrupt-driven UART reception
+- Robust command parsing and error handling
 
-Configurable sampling interval
+---
 
-Multiple output formats:
+## Hardware and Software Requirements
 
-Plain Text
+### Hardware
+- STM32 microcontroller (STM32U5 series or compatible)
+- USB-to-UART interface
+- Serial terminal (Tera Term, PuTTY, Minicom)
+
+### Software
+- STM32CubeIDE
+- STM32 HAL drivers
+- arm-none-eabi-gcc toolchain
+
+---
+
+## UART Configuration
+
+- UART Instance: USART1
+- Baud Rate: 115200
+- Data Bits: 8
+- Stop Bits: 1
+- Parity: None
+- Flow Control: None
+
+---
+
+## Supported Commands
+
+| Command | Description |
+|------|------------|
+| READ | Read sensor values
+| START | Start continuous monitoring |
+| STOP | Stop continuous monitoring |
+| SET_INTERVAL `<sec>` | Set interval (1–60 seconds) |
+| FORMAT TEXT | Set output format to text |
+| FORMAT CSV | Set output format to CSV |
+| FORMAT JSON | Set output format to JSON |
+| HELP | Display available commands |
+
+## Example Output
+
+Text
+```bash
+Temperature: 25 C, Humidity: 60 %
+```
 
 CSV
+```bash
+25,60
+```
 
 JSON
-
-Interrupt-driven UART reception
-
-Robust command parsing and error handling
-
-**Hardware and Software Requirements**
-Hardware
-
-STM32 microcontroller (tested with STM32U5 series)
-
-USB-to-UART connection
-
-Serial terminal (Tera Term, PuTTY, Minicom, etc.)
-
-Software
-
-STM32CubeIDE
-
-STM32 HAL drivers
-
-C compiler (arm-none-eabi-gcc)
-
-**UART Configuration**
-
-UART Instance: USART1
-
-Baud Rate: 115200
-
-Data Bits: 8
-
-Stop Bits: 1
-
-Parity: None
-
-Flow Control: None
-
-
-**Command	Description**
-
-READ	Read sensor values once
-START	Start continuous sensor monitoring
-STOP	Stop continuous monitoring
-SET_INTERVAL <sec>	Set sampling interval (1–60 seconds)
-FORMAT TEXT	Output in human-readable text
-FORMAT CSV	Output in CSV format
-FORMAT JSON	Output in JSON format
-HELP	Display available commands
-Example Outputs
-
-TEXT Format
-'''bash
-Temperature: 25 C, Humidity: 60 %
-'''
-
-CSV Format
-25,60
-
-JSON Format
+```bash
 {"temp":25,"hum":60}
+```
 
-**Program Flow**
+## Program Flow
 
-System initializes clock, GPIO, UART, and ICACHE
+1. Initialize system clock, GPIO, ICACHE, and UART
+2. Display startup message on UART
+3. Receive user commands using UART interrupts
+4. Parse and execute commands in the main loop
+5. Simulate sensor data using system ticks
+6. Format and transmit data via UART
 
-Startup message is sent over UART
+---
 
-UART receive interrupt collects user commands byte-by-byte
+## Code Structure
 
-Commands are parsed and executed in the main loop
+- `main.c`
+  - UART initialization and interrupt handling
+  - Command parsing
+  - Sensor simulation
+  - Data formatting and transmission
+- Uses STM32 HAL UART callbacks
+- Non-blocking and interrupt-driven design
 
-Sensor data is simulated using system tick timing
+---
 
-Data is formatted and transmitted over UART
+## Error Handling
 
-**Code Structure**
+- Detects unknown commands
+- Prevents command buffer overflow
+- Validates command parameters
+- Sends error messages over UART
 
-main.c
+---
 
-UART initialization and interrupt handling
+## Future Enhancements
 
-Command parsing logic
+- Integration of real sensors (I2C/SPI)
+- Persistent storage using Flash or EEPROM
+- RTOS-based task scheduling
+- Data integrity checks (CRC)
+- Support for multiple sensor nodes
 
-Sensor simulation
+---
 
-Output formatting
+## Author
 
-Uses STM32 HAL callbacks for UART reception
+Likitha Muralidhar
 
-Non-blocking and interrupt-driven design
 
-Error Handling
-
-Detects unknown commands
-
-Prevents buffer overflow
-
-Validates command parameters
-
-Provides clear error messages over UART
-
-**Future Enhancements**
-
-Replace simulated sensors with real hardware sensors
-
-Add EEPROM or Flash logging
-
-Integrate RTOS for task scheduling
-
-Add CRC or checksum for data integrity
-
-Extend commands for multi-sensor support
